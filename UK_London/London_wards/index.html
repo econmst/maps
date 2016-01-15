@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta charset="utf-8" />
+  	<!-- Stylesheets -->
+  	<title>London Wards</title>
+  </head>
+  
+  <style type="text/css">
+        .path {
+          stroke: grey;
+          stroke-width: 0.3;
+          fill: white;
+        }
+        .land {
+          stroke: grey;
+          stroke-width: 0.3;
+          fill: blue;
+        }
+        .boundary {
+          fill: none;
+          stroke: #999;
+        }
+  </style>  
+  <body>
+    <h1>Template D3 London Wards</h1>
+
+    <div id="map"></div>
+
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script>
+    var height = 500;
+    var width = 500;
+
+    var projection = d3.geo.mercator()    
+                    .center([-0.5,51.5])    
+                    .scale(30000)    
+                    .translate([width / 4 , height / 2]);   
+
+    var svg = d3.select("#map")
+               .append("svg")
+               .attr("width", height)
+               .attr("height", height);
+
+    var color = d3.scale.linear().domain([0,15])
+                .range(['black', 'red', 'red', 'red']);
+
+    var path = d3.geo.path()
+           .projection(projection)
+
+     var g = svg.append("g");
+
+     d3.json("data/final2.json", function (error, lon) {
+        
+        var map = g.selectAll("path").append("g")
+          .data(topojson.feature(lon, lon.objects.collection).features)
+          .enter()
+          .append("path")
+              // .attr('class', function(d){ return 'lander ' + d.properties.GEN;} )
+              // .on("mouseover", function(d) {
+              //   document.querySelector("#crazy").textContent = d.properties.GEN;
+              // })
+          .attr("class", "path")
+          .attr('d', path);
+        // .attr('fill', function(d, i) { return color(i); });
+         // console.log(de);
+
+         // map.attr("fill", "red")
+         // .attr("stroke", "white")
+         // .on("mousedown", function (d) {
+         //   d3.select(this).transition().duration(1000).attr("fill", "navy");
+         // })
+         // .on("mouseover", function (d) {
+         //   d3.select(this).transition().duration(1000).attr("transform", "translate(0,1000)").attr("opacity", 0.7);
+         // });
+
+
+         });
+
+        </script>
+
+  </body>
+  <html>
+

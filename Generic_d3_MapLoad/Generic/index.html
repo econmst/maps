@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta charset="utf-8" />
+  	<!-- Stylesheets -->
+  	<title>Template D3</title>
+  </head>
+  
+  <style type="text/css">
+         .land {
+          fill: #ddd;
+        }
+        .boundary {
+          fill: none;
+          stroke: #999;
+        }
+  </style>  
+  <body>
+
+    <div id="map"></div>
+
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script>
+    var height = 650;
+    var width = 1000;
+
+    var projection = d3.geo.stereographic()    
+        .center([9,51.3])    
+        .scale(8000)    
+        .translate([width / 4 , height / 2]);   
+
+    var svg = d3.select("#map")
+               .append("svg")
+               .attr("width", height)
+               .attr("height", height);
+
+    var color = d3.scale.linear().domain([0,15])
+                .range(['black', 'red', 'red', 'red']);
+
+    var path = d3.geo.path()
+           .projection(projection)
+
+     var g = svg.append("g");
+
+     d3.json("data/topogermany.json", function (error, de) {
+        var map = g.selectAll("path")
+        .data(topojson.feature(de, de.objects.germany4).features)
+        .enter()
+        .append("path")
+
+        .attr('class', function(d){ return 'lander ' + d.properties.GEN;} )
+        .on("mouseover", function(d) {
+          document.querySelector("#crazy").textContent = d.properties.GEN;
+        })
+        .attr('d', path)
+        .attr('fill', function(d, i) { return color(i); });
+         // console.log(de);
+
+         // map.attr("fill", "red")
+         // .attr("stroke", "white")
+         // .on("mousedown", function (d) {
+         //   d3.select(this).transition().duration(1000).attr("fill", "navy");
+         // })
+         // .on("mouseover", function (d) {
+         //   d3.select(this).transition().duration(1000).attr("transform", "translate(0,1000)").attr("opacity", 0.7);
+         // });
+
+         });
+
+        </script>
+
+  </body>
+  <html>
+
